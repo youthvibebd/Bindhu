@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>স্বেচ্ছাসেবী সংগঠন - এডমিন প্যানেল সহ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #f1faee;
+            --dark-color: #1d3557;
+            --admin-sidebar: #2c3e50;
+            --admin-bg: #ecf0f1;
+        }
+        
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        /* নেভিগেশন বার স্টাইল */
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand img {
+            height: 50px;
+        }
+        
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .nav-link:hover:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: white;
+        }
+        
+        /* হিরো সেকশন স্টাইল */
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            position: relative;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary-color);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .card-img-top {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .counter-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 60px 0;
+        }
+        
+        .counter-box {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .counter {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .contact-info {
+            margin-bottom: 30px;
+        }
+        
+        .contact-info i {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 30px 0;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 20px;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #c1121f;
+            border-color: #c1121f;
+        }
+        
+        /* এডমিন প্যানেল স্টাইল */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 10000;
+            overflow-y: auto;
+        }
+        
+        .admin-panel.open {
+            right: 0;
+        }
+        
+        .admin-toggle {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            cursor: pointer;
+            z-index: 9999;
+            transform: translateY(-50%);
+        }
+        
+        .admin-header {
+            background-color: var(--admin-sidebar);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .admin-content {
+            padding: 20px;
+        }
+        
+        .admin-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        
+        .admin-section h4 {
+            color: var(--admin-sidebar);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .admin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            display: none;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(230, 57, 70, 0.25);
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            margin: 100px auto;
+        }
+        
+        .login-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .login-form {
+            padding: 30px;
+        }
+        
+        .admin-only {
+            display: none;
+        }
+        
+        .admin-logged-in .admin-only {
+            display: block;
+        }
+        
+        .admin-logged-in .admin-logged-out {
+            display: none;
+        }
+        
+        .project-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <!-- এডমিন ওভারলে -->
+    <div class="admin-overlay" id="adminOverlay"></div>
+
+    <!-- এডমিন টগল বাটন -->
+    <div class="admin-toggle" id="adminToggle">
+        <i class="fas fa-cog"></i> এডমিন
+    </div>
+
+    <!-- এডমিন প্যানেল -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h4><i class="fas fa-cogs me-2"></i>এডমিন প্যানেল</h4>
+            <p class="mb-0">স্বেচ্ছাসেবী সংগঠন</p>
+        </div>
+        
+        <div class="admin-content">
+            <!-- লগইন ফর্ম -->
+            <div class="admin-section admin-logged-out" id="loginSection">
+                <h4><i class="fas fa-sign-in-alt me-2"></i>লগইন</h4>
+                <form id="adminLoginForm">
+                    <div class="mb-3">
+                        <label for="adminUsername" class="form-label">ব্যবহারকারীর নাম</label>
+                        <input type="text" class="form-control" id="adminUsername" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adminPassword" class="form-label">পাসওয়ার্ড</label>
+                        <input type="password" class="form-control" id="adminPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-sign-in-alt me-2"></i>লগইন
+                    </button>
+                </form>
+                <div class="credentials-hint mt-3 p-2 bg-light rounded">
+                    <small><i class="fas fa-info-circle me-1"></i>ডেমো অ্যাক্সেস: admin / admin123</small>
+                </div>
+            </div>
+            
+            <!-- এডমিন কন্ট্রোলস -->
+            <div class="admin-only">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">কন্ট্রোল প্যানেল</h4>
+                    <button class="btn btn-sm btn-outline-danger" id="adminLogout">
+                        <i class="fas fa-sign-out-alt"></i> লগআউট
+                    </button>
+                </div>
+                
+                <!-- হোম সেকশন এডিট -->
+                <div class="admin-section">
+                    <h4><i class="fas fa-home me-2"></i>হোম সেকশন</h4>
+                    <div class="mb-3">
+                        <label for="heroTitle" class="form-label">শিরোনাম</label>
+                        <input type="text" class="form-control" id="heroTitle">
+                    </div>
+                    <div class="mb-3">
+                        <label for="heroSubtitle" class="form-label">উপশিরোনাম</label>
+                        <input type="text" class="form-control" id="heroSubtitle">
+                    </div>
+                    <button class="btn btn-primary w-100" id="saveHero">
+                        <i class="fas fa-save me-2"></i>সংরক্ষণ করুন
+                    </button>
+                </div>
+                
+                <!-- কাউন্টার সেকশন এডিট -->
+                <div class="admin-section">
+                    <h4><i class="fas fa-chart-line me-2"></i>কাউন্টার ডেটা</h4>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="counter1" class="form-label">স্বেচ্ছাসেবক</label>
+                            <input type="number" class="form-control" id="counter1">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="counter2" class="form-label">প্রকল্প</label>
+                            <input type="number" class="form-control" id="counter2">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="counter3" class="form-label">সুবিধাভোগী</label>
+                            <input type="number" class="form-control" id="counter3">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="counter4" class="form-label">বছর</label>
+                            <input type="number" class="form-control" id="counter4">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100" id="saveCounters">
+                        <i class="fas fa-save me-2"></i>সংরক্ষণ করুন
+                    </button>
+                </div>
+                
+                <!-- প্রকল্প ম্যানেজমেন্ট -->
+                <div class="admin-section">
+                    <h4><i class="fas fa-project-diagram me-2"></i>প্রকল্প ব্যবস্থাপনা</h4>
+                    <div id="projectsList">
+                        <!-- প্রকল্পগুলি এখানে লোড হবে -->
+                    </div>
+                    
+                    <h5 class="mt-4">নতুন প্রকল্প যোগ করুন</h5>
+                    <div class="mb-3">
+                        <label for="projectTitle" class="form-label">প্রকল্পের নাম</label>
+                        <input type="text" class="form-control" id="projectTitle">
+                    </div>
+                    <div class="mb-3">
+                        <label for="projectDesc" class="form-label">বিবরণ</label>
+                        <textarea class="form-control" id="projectDesc" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="projectImage" class="form-label">ছবির URL</label>
+                        <input type="text" class="form-control" id="projectImage">
+                    </div>
+                    <button class="btn btn-success w-100" id="addProject">
+                        <i class="fas fa-plus me-2"></i>প্রকল্প যোগ করুন
+                    </button>
+                </div>
+                
+                <!-- যোগাযোগ তথ্য -->
+                <div class="admin-section">
+                    <h4><i class="fas fa-address-card me-2"></i>যোগাযোগ তথ্য</h4>
+                    <div class="mb-3">
+                        <label for="contactAddress" class="form-label">ঠিকানা</label>
+                        <textarea class="form-control" id="contactAddress" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactPhone" class="form-label">ফোন নম্বর</label>
+                        <input type="text" class="form-control" id="contactPhone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactEmail" class="form-label">ইমেইল</label>
+                        <input type="email" class="form-control" id="contactEmail">
+                    </div>
+                    <button class="btn btn-primary w-100" id="saveContact">
+                        <i class="fas fa-save me-2"></i>সংরক্ষণ করুন
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- নেভিগেশন বার -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="https://via.placeholder.com/150x50?text=LOGO" alt="সংগঠনের লোগো">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">হোম</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">আমাদের সম্পর্কে</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">প্রকল্পসমূহ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">যোগাযোগ</a>
+                    </li>
+                    <li class="nav-item admin-only">
+                        <a class="nav-link" href="#" id="openAdminPanel">
+                            <i class="fas fa-cog me-1"></i>এডমিন
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- হিরো সেকশন -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4" id="heroTitleElement">সেবার মাধ্যমেই মানবতা</h1>
+            <p class="lead mb-5" id="heroSubtitleElement">আমরা একটি অরাজনৈতিক, অলাভজনক স্বেচ্ছাসেবী সংগঠন</p>
+            <a href="#contact" class="btn btn-primary btn-lg px-4 me-2">যোগ দিন</a>
+            <a href="#projects" class="btn btn-outline-light btn-lg px-4">আমাদের প্রকল্প</a>
+        </div>
+    </section>
+
+    <!-- আমাদের সম্পর্কে -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <h2 class="text-center section-title">আমাদের সম্পর্কে</h2>
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3>আমাদের মিশন</h3>
+                    <p>আমরা বিশ্বাস করি যে ছোট ছোট প্রচেষ্টাই বড় পরিবর্তন আনতে পারে। আমাদের লক্ষ্য সমাজের সুবিধাবঞ্চিত মানুষের পাশে দাঁড়ানো, শিক্ষার আলো ছড়িয়ে দেওয়া এবং মানবিক মূল্যবোধকে জাগ্রত করা।</p>
+                    <p>২০১৫ সাল থেকে আমরা নিরলসভাবে কাজ করে যাচ্ছি মানুষের সেবায়। আমাদের টিমে রয়েছে বিভিন্ন পেশার নিবেদিতপ্রাণ স্বেচ্ছাসেবকরা।</p>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="আমাদের টিম" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- কমিটি মেম্বার কাউন্টার -->
+    <section class="counter-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <div class="counter-box">
+                        <div class="counter" data-count="120" id="counterElement1">0</div>
+                        <p>সক্রিয় স্বেচ্ছাসেবক</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="counter-box">
+                        <div class="counter" data-count="35" id="counterElement2">0</div>
+                        <p>সম্পন্ন প্রকল্প</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="counter-box">
+                        <div class="counter" data-count="5000" id="counterElement3">0</div>
+                        <p>সুবিধাভোগী</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="counter-box">
+                        <div class="counter" data-count="7" id="counterElement4">0</div>
+                        <p>বছরের যাত্রা</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- প্রকল্পসমূহ -->
+    <section id="projects" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center section-title">আমাদের প্রকল্পসমূহ</h2>
+            <div class="row" id="projectsContainer">
+                <!-- প্রকল্পগুলি এখানে ডায়নামিকভাবে লোড হবে -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="শিক্ষা সহায়তা">
+                        <div class="card-body">
+                            <h5 class="card-title">শিক্ষা সহায়তা কর্মসূচি</h5>
+                            <p class="card-text">দরিদ্র ও সুবিধাবঞ্চিত শিশুদের শিক্ষার উপকরণ ও বৃত্তি প্রদান।</p>
+                            <a href="#" class="btn btn-primary">আরও জানুন</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1579684453423-f84349ef60b0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="স্বাস্থ্য সেবা">
+                        <div class="card-body">
+                            <h5 class="card-title">মুক্ত স্বাস্থ্য ক্যাম্প</h5>
+                            <p class="card-text">গ্রামীণ এলাকায় বিনামূল্যে চিকিৎসা সেবা ও ওষুধ বিতরণ।</p>
+                            <a href="#" class="btn btn-primary">আরও জানুন</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="দুর্যোগ সহায়তা">
+                        <div class="card-body">
+                            <h5 class="card-title">দুর্যোগ সহায়তা</h5>
+                            <p class="card-text">বন্যা, ঘূর্ণিঝড় সহ বিভিন্ন দুর্যোগে ত্রাণ কার্যক্রম পরিচালনা।</p>
+                            <a href="#" class="btn btn-primary">আরও জানুন</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- যোগাযোগ -->
+    <section id="contact" class="py-5">
+        <div class="container">
+            <h2 class="text-center section-title">যোগাযোগ করুন</h2>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="contact-info">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h5>ঠিকানা</h5>
+                                <p id="contactAddressElement">১২৩/বি, সেবা রোড, ঢাকা-১২০৫, বাংলাদেশ</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="fas fa-phone-alt"></i>
+                            <div>
+                                <h5>ফোন</h5>
+                                <p id="contactPhoneElement">+880 1234 567890</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h5>ইমেইল</h5>
+                                <p id="contactEmailElement">info@organization.org</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <form>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="আপনার নাম">
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="আপনার ইমেইল">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="বিষয়">
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="5" placeholder="আপনার বার্তা"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">বার্তা পাঠান</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ফুটার -->
+    <footer class="text-center">
+        <div class="container">
+            <div class="social-icons mb-4">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            <p>&copy; 2023 স্বেচ্ছাসেবী সংগঠন। সর্বস্বত্ব সংরক্ষিত।</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // এডমিন প্যানেল কন্ট্রোল
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM এলিমেন্ট সিলেক্টর
+            const adminToggle = document.getElementById('adminToggle');
+            const adminPanel = document.getElementById('adminPanel');
+            const adminOverlay = document.getElementById('adminOverlay');
+            const openAdminPanel = document.getElementById('openAdminPanel');
+            const adminLoginForm = document.getElementById('adminLoginForm');
+            const adminLogout = document.getElementById('adminLogout');
+            
+            // এডমিন প্যানেল টগল ফাংশন
+            function toggleAdminPanel() {
+                adminPanel.classList.toggle('open');
+                adminOverlay.style.display = adminPanel.classList.contains('open') ? 'block' : 'none';
+            }
+            
+            // ইভেন্ট লিসেনার
+            adminToggle.addEventListener('click', toggleAdminPanel);
+            openAdminPanel.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleAdminPanel();
+            });
+            adminOverlay.addEventListener('click', toggleAdminPanel);
+            
+            // লগইন ফর্ম হ্যান্ডলিং
+            adminLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('adminUsername').value;
+                const password = document.getElementById('adminPassword').value;
+                
+                // সাধারণ ভেরিফিকেশন
+                if(username === 'admin' && password === 'admin123') {
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    document.body.classList.add('admin-logged-in');
+                    loadAdminData();
+                } else {
+                    alert('ভুল ব্যবহারকারীর নাম বা পাসওয়ার্ড!');
+                }
+            });
+            
+            // লগআউট ফাংশন
+            adminLogout.addEventListener('click', function() {
+                localStorage.removeItem('adminLoggedIn');
+                document.body.classList.remove('admin-logged-in');
+            });
+            
+            // চেক যদি আগে থেকে লগইন করা থাকে
+            if(localStorage.getItem('adminLoggedIn') === 'true') {
+                document.body.classList.add('admin-logged-in');
+                loadAdminData();
+            }
+            
+            // কাউন্টার অ্যানিমেশন
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200;
+            
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-count');
+                    const count = +counter.innerText;
+                    const increment = target / speed;
+                    
+                    if(count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(updateCount, 1);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                
+                updateCount();
+            });
+            
+            // এডমিন ডেটা লোড ফাংশন
+            function loadAdminData() {
+                // হোম সেকশন ডেটা লোড
+                document.getElementById('heroTitle').value = document.getElementById('heroTitleElement').innerText;
+                document.getElementById('heroSubtitle').value = document.getElementById('heroSubtitleElement').innerText;
+                
+                // কাউন্টার ডেটা লোড
+                document.getElementById('counter1').value = document.getElementById('counterElement1').getAttribute('data-count');
+                document.getElementById('counter2').value = document.getElementById('counterElement2').getAttribute('data-count');
+                document.getElementById('counter3').value = document.getElementById('counterElement3').getAttribute('data-count');
+                document.getElementById('counter4').value = document.getElementById('counterElement4').getAttribute('data-count');
+                
+                // যোগাযোগ ডেটা লোড
+                document.getElementById('contactAddress').value = document.getElementById('contactAddressElement').innerText;
+                document.getElementById('contactPhone').value = document.getElementById('contactPhoneElement').innerText;
+                document.getElementById('contactEmail').value = document.getElementById('contactEmailElement').innerText;
+                
+                // প্রকল্প ডেটা লোড
+                loadProjects();
+            }
+            
+            // হোম সেকশন সেভ
+            document.getElementById('saveHero').addEventListener('click', function() {
+                document.getElementById('heroTitleElement').innerText = document.getElementById('heroTitle').value;
+                document.getElementById('heroSubtitleElement').innerText = document.getElementById('heroSubtitle').value;
+                alert('হোম সেকশন সংরক্ষণ করা হয়েছে!');
+            });
+            
+            // কাউন্টার সেভ
+            document.getElementById('saveCounters').addEventListener('click', function() {
+                const counter1 = document.getElementById('counter1').value;
+                const counter2 = document.getElementById('counter2').value;
+                const counter3 = document.getElementById('counter3').value;
+                const counter4 = document.getElementById('counter4').value;
+                
+                document.getElementById('counterElement1').setAttribute('data-count', counter1);
+                document.getElementById('counterElement2').setAttribute('data-count', counter2);
+                document.getElementById('counterElement3').setAttribute('data-count', counter3);
+                document.getElementById('counterElement4').setAttribute('data-count', counter4);
+                
+                // কাউন্টার রিসেট
+                document.querySelectorAll('.counter').forEach(counter => {
+                    counter.innerText = '0';
+                });
+                
+                // কাউন্টার অ্যানিমেশন রিস্টার্ট
+                counters.forEach(counter => {
+                    const updateCount = () => {
+                        const target = +counter.getAttribute('data-count');
+                        const count = +counter.innerText;
+                        const increment = target / speed;
+                        
+                        if(count < target) {
+                            counter.innerText = Math.ceil(count + increment);
+                            setTimeout(updateCount, 1);
+                        } else {
+                            counter.innerText = target;
+                        }
+                    };
+                    
+                    updateCount();
+                });
+                
+                alert('কাউন্টার ডেটা সংরক্ষণ করা হয়েছে!');
+            });
+            
+            // যোগাযোগ তথ্য সেভ
+            document.getElementById('saveContact').addEventListener('click', function() {
+                document.getElementById('contactAddressElement').innerText = document.getElementById('contactAddress').value;
+                document.getElementById('contactPhoneElement').innerText = document.getElementById('contactPhone').value;
+                document.getElementById('contactEmailElement').innerText = document.getElementById('contactEmail').value;
+                alert('যোগাযোগ তথ্য সংরক্ষণ করা হয়েছে!');
+            });
+            
+            // প্রকল্প ব্যবস্থাপনা
+            function loadProjects() {
+                const projectsContainer = document.getElementById('projectsContainer');
+                const projectsList = document.getElementById('projectsList');
+                
+                // ক্লিয়ার existing projects
+                projectsList.innerHTML = '';
+                
+                // প্রকল্প লোড করুন (এখানে localStorage থেকে লোড করা উচিত)
+                const projects = [
+                    { title: 'শিক্ষা সহায়তা কর্মসূচি', desc: 'দরিদ্র ও সুবিধাবঞ্চিত শিশুদের শিক্ষার উপকরণ ও বৃত্তি প্রদান।', image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80' },
+                    { title: 'মুক্ত স্বাস্থ্য ক্যাম্প', desc: 'গ্রামীণ এলাকায় বিনামূল্যে চিকিৎসা সেবা ও ওষুধ বিতরণ।', image: 'https://images.unsplash.com/photo-1579684453423-f84349ef60b0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80' },
+                    { title: 'দুর্যোগ সহায়তা', desc: 'বন্যা, ঘূর্ণিঝড় সহ বিভিন্ন দুর্যোগে ত্রাণ কার্যক্রম পরিচালনা।', image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80' }
+                ];
+                
+                // প্রকল্প লোড করে UI তে দেখান
+                projects.forEach((project, index) => {
+                    const projectItem = document.createElement('div');
+                    projectItem.className = 'project-item';
+                    projectItem.innerHTML = `
+                        <h6>${project.title}</h6>
+                        <p class="small">${project.desc}</p>
+                        <button class="btn btn-sm btn-danger delete-project" data-index="${index}">
+                            <i class="fas fa-trash"></i> মুছুন
+                        </button>
+                    `;
+                    projectsList.appendChild(projectItem);
+                });
+                
+                // মুছুন বাটন ইভেন্ট
+                document.querySelectorAll('.delete-project').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = this.getAttribute('data-index');
+                        // প্রকল্প লিস্ট থেকে মুছুন
+                        projects.splice(index, 1);
+                        // UI রিফ্রেশ
+                        loadProjects();
+                    });
+                });
+            }
+            
+            // নতুন প্রকল্প যোগ
+            document.getElementById('addProject').addEventListener('click', function() {
+                const title = document.getElementById('projectTitle').value;
+                const desc = document.getElementById('projectDesc').value;
+                const image = document.getElementById('projectImage').value;
+                
+                if(title && desc && image) {
+                    // প্রকল্প কন্টেইনারে যোগ
+                    const projectsContainer = document.getElementById('projectsContainer');
+                    const projectCol = document.createElement('div');
+                    projectCol.className = 'col-md-4';
+                    projectCol.innerHTML = `
+                        <div class="card">
+                            <img src="${image}" class="card-img-top" alt="${title}">
+                            <div class="card-body">
+                                <h5 class="card-title">${title}</h5>
+                                <p class="card-text">${desc}</p>
+                                <a href="#" class="btn btn-primary">আরও জানুন</a>
+                            </div>
+                        </div>
+                    `;
+                    projectsContainer.appendChild(projectCol);
+                    
+                    // ফর্ম রিসেট
+                    document.getElementById('projectTitle').value = '';
+                    document.getElementById('projectDesc').value = '';
+                    document.getElementById('projectImage').value = '';
+                    
+                    alert('প্রকল্প যোগ করা হয়েছে!');
+                } else {
+                    alert('দয়া করে সব fields পূরণ করুন!');
+                }
+            });
+            
+            // প্রারম্ভিক ডেটা লোড
+            loadProjects();
+        });
+    </script>
+</body>
+</html>
